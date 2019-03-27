@@ -9,7 +9,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.airubby.crm.pojo.BaseDict;
+import com.airubby.crm.pojo.Customer;
+import com.airubby.crm.pojo.QueryVo;
 import com.airubby.crm.service.BaseDictService;
+import com.airubby.crm.service.CustomerService;
+import com.airubby.crm.utils.Page;
 
 /**
  * 客户信息处理
@@ -21,6 +25,8 @@ import com.airubby.crm.service.BaseDictService;
 public class CustomerController {
 	@Autowired
 	private BaseDictService dictService;
+	@Autowired
+	private CustomerService customerService;
 	
 	@Value("${customer_from_type}")
 	private String customer_from_type;
@@ -32,7 +38,7 @@ public class CustomerController {
 	private String customer_level_type;
 	
 	@RequestMapping("list")
-	public String list(Model model) {
+	public String list(Model model,QueryVo vo) {
 		// 查询来源
 		List<BaseDict> fromType = dictService.getBaseDictByCode(customer_from_type);
 		// 查询行业
@@ -44,6 +50,16 @@ public class CustomerController {
 		model.addAttribute("fromType", fromType);
 		model.addAttribute("industryType", industryType);
 		model.addAttribute("levelType", levelType);
+		
+		//跟据查询条件分页查询用户列表
+		Page<Customer> page = customerService.getCustomerByQueryVo(vo);
+		
+		//设置分页数返回
+		model.addAttribute("page", page);
+		
+		//返回查询条件
+		model.addAttribute("vo", vo);
+		
 		return "customer";
 	}
 	
