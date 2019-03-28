@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.airubby.crm.pojo.BaseDict;
 import com.airubby.crm.pojo.Customer;
@@ -62,6 +63,43 @@ public class CustomerController {
 		
 		return "customer";
 	}
+	
+	@RequestMapping("edit")
+	@ResponseBody
+	public Customer edit(Integer id){
+		Customer customer = customerService.getCustomerById(id);
+		return customer;
+	} 
+	
+	@RequestMapping("update")
+	@ResponseBody
+	public String update(Customer customer){
+		String msg = "1";
+		try {
+			customerService.updateCustomer(customer);
+			msg = "0";
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return msg;
+	}
+	
+	@RequestMapping("delete")
+	@ResponseBody
+	public String delete(Integer id){
+		String msg = "1";
+		try {
+			customerService.deleteCustomer(id);
+			msg = "0";
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return msg;
+	}
+	
+	
+	
+	
 	
 	@RequestMapping("myTag")
 	public String myTag() {
